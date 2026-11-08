@@ -249,23 +249,33 @@ export function Contact() {
                         placeholder="?"
                       />
                     </div>
-                    <Button
-                      type="submit"
-                      disabled={sending}
-                      className="inline-flex items-center gap-2.5 rounded-full bg-petrol-900 px-8 py-3.5 text-sm font-semibold text-white hover:bg-petrol-800"
-                    >
-                      {sending ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                          Enviando...
-                        </>
-                      ) : (
-                        <>
-                          Enviar formulário
-                          <Send className="h-4 w-4" aria-hidden />
-                        </>
-                      )}
-                    </Button>
+                    <div className="flex items-center gap-3">
+                      <Button
+                        type="reset"
+                        variant="outline"
+                        className="rounded-full px-6"
+                        onClick={() => setReason('informacoes')}
+                      >
+                        Limpar campos
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={sending}
+                        className="inline-flex items-center gap-2.5 rounded-full bg-petrol-900 px-8 py-3.5 text-sm font-semibold text-white hover:bg-petrol-800"
+                      >
+                        {sending ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                            Enviando...
+                          </>
+                        ) : (
+                          <>
+                            Enviar formulário
+                            <Send className="h-4 w-4" aria-hidden />
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
 
                   <p className="text-xs leading-relaxed text-ink-soft">

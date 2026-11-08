@@ -3,50 +3,60 @@
 import { ArrowUpRight, ChartNoAxesColumn, FileDown, LineChart } from 'lucide-react'
 import { Reveal, Section, SectionHeader } from './bits'
 
+// PDFs oficiais — mesmos arquivos publicados no portal original
 const reports = [
   {
     year: '2025',
     highlight: 'Primeira década',
+    pdf: 'https://www2.hmdcc.com.br/wp-content/uploads/2026/05/RAG-2025_V2.pdf',
     text: 'Uma década como referência nacional em modelo de gestão inovador — sucesso demonstrado não apenas pelos números, mas pelo jeito de fazer que valoriza a experiência do profissional e do paciente.',
   },
   {
     year: '2024',
     highlight: 'Transdisciplinaridade',
+    pdf: 'https://www2.hmdcc.com.br/wp-content/uploads/2025/05/RAG-2024-V2.pdf',
     text: 'A transdisciplinaridade e a experiência do paciente nortearam projetos, processos e inovação, consolidando um legado de qualidade assistencial e humanização para a Rede SUS-BH.',
   },
   {
     year: '2023',
     highlight: 'Excelência assistencial',
+    pdf: 'https://www2.hmdcc.com.br/wp-content/uploads/2024/04/RAG23-1.pdf',
     text: 'A trajetória de uma instituição 100% SUS em consolidação como referência em atendimento de excelência, eficiência na gestão financeira e cuidado com foco total no paciente.',
   },
   {
     year: '2022',
     highlight: 'Retomada',
+    pdf: 'https://www2.hmdcc.com.br/wp-content/uploads/2023/04/RAG-2022.pdf',
     text: 'O início da retomada pós-pandemia, os desafios da gestão financeira e da sustentabilidade — permeados pelo cuidado centrado no usuário, em um ano de aprendizado e aperfeiçoamento.',
   },
   {
     year: '2021',
     highlight: 'Enfrentamento à COVID-19',
+    pdf: 'https://www2.hmdcc.com.br/wp-content/uploads/2022/04/RAG2021Web-1.pdf',
     text: 'Como o hospital se tornou o segundo de Minas Gerais que mais atendeu pacientes com COVID-19, enfrentou a escassez de medicamentos, inovou em equipes e desenvolveu novos projetos.',
   },
   {
     year: '2020',
     highlight: 'Vidas dedicadas',
+    pdf: 'https://www2.hmdcc.com.br/wp-content/uploads/2021/03/RG20_HMDCC.pdf',
     text: 'A experiência institucional diante do desafio da pandemia — uma publicação em homenagem às vidas salvas, às vidas perdidas e às vidas dedicadas.',
   },
   {
     year: '2019',
     highlight: 'Cultura de segurança',
+    pdf: 'https://www2.hmdcc.com.br/wp-content/uploads/2020/06/RAG_2019Rev2.pdf',
     text: 'Fortalecimento da cultura de segurança, consolidação das linhas de cuidado, formação profissional, novas tecnologias e interação com a comunidade e o controle social.',
   },
   {
     year: '2018',
     highlight: 'Eficiência',
+    pdf: 'https://www2.hmdcc.com.br/wp-content/uploads/2019/05/relatorio-gestao-hmdcc-2018a.pdf',
     text: 'Crescimento da produção e novas tecnologias de gestão, com reduções significativas dos tempos de espera em CTI, leitos clínicos e filas de cirurgias eletivas.',
   },
   {
     year: '2017',
     highlight: 'Ativação total',
+    pdf: 'https://www2.hmdcc.com.br/wp-content/uploads/2018/07/RELATORIODEGESTAO2017.pdf',
     text: 'O maior desafio da história do hospital: a ativação total dos leitos. O primeiro relatório registra a construção da instituição até o funcionamento a 100%.',
   },
 ]
@@ -95,7 +105,9 @@ export function Transparency() {
                   {report.text}
                 </p>
                 <a
-                  href="#contato"
+                  href={report.pdf}
+                  target="_blank"
+                  rel="noreferrer"
                   className="mt-6 inline-flex items-center gap-2 border-t border-hairline pt-5 text-[13px] font-semibold text-teal-700 transition-colors hover:text-teal-600"
                 >
                   <FileDown className="h-4 w-4" aria-hidden />
