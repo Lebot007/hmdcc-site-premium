@@ -1,10 +1,14 @@
 'use client'
 
+import { useState } from 'react'
 import {
   ArrowUpRight,
   Briefcase,
+  ChevronLeft,
+  ChevronRight,
   ClipboardList,
   Clock3,
+  ExternalLink,
   FileText,
   GraduationCap,
   ScrollText,
@@ -13,6 +17,10 @@ import {
 } from 'lucide-react'
 import { Reveal, Section, SectionHeader } from './bits'
 import { Badge } from '@/components/ui/badge'
+import { editais } from '@/data/editais'
+import { compras } from '@/data/compras'
+
+const COMPRAS_POR_PAGINA = 10
 
 const jobCategories = [
   {
@@ -55,70 +63,19 @@ const selectionSteps = [
   },
 ]
 
-const editais = [
-  { edital: 'Resultados dos processos seletivos de 2026', year: '2026', status: 'EM ANDAMENTO' },
-  { edital: 'Edital Processo Seletivo HMDCC 2026', year: '2026', status: 'EM ANDAMENTO' },
-  { edital: 'Veja as vagas disponíveis do HMDCC na plataforma Gupy', year: '2026', status: 'EM ANDAMENTO' },
-  { edital: 'Resultados dos processos seletivos de 2025', year: '2025', status: 'VENCIDO' },
-  { edital: 'Edital Processo Seletivo HMDCC 2025', year: '2025', status: 'VENCIDO' },
-]
-
-const procurement = [
+// Links oficiais de documentos, idênticos aos do portal original
+const comprasDocs = [
   {
-    code: 'CG 35/2026',
-    process: '324/2026',
-    object: 'Fornecimento sob demanda de copos e embalagens descartáveis · 36 meses',
-    opening: '17/11/2026',
-    status: 'PUBLICADO',
+    label: 'Banco de Marcas',
+    href: 'https://hmdcc.com.br/banco-de-marcas',
   },
   {
-    code: 'CG 32/2026',
-    process: '254/2026',
-    object: 'Fornecimento sob demanda de materiais médico-hospitalares · 24 meses',
-    opening: '15/10/2026',
-    status: 'PUBLICADO',
+    label: 'Regulamento de Compras',
+    href: 'https://www2.hmdcc.com.br/wp-content/uploads/2026/07/REGULAMENTO-DE-COMPRAS-VERSAO-DEZ-2025.pdf',
   },
   {
-    code: 'CG 30/2026',
-    process: '239/2026',
-    object: 'Serviço médico especializado em neurorradiologia e anestesiologia · 18 meses',
-    opening: '07/10/2026',
-    status: 'PUBLICADO',
-  },
-  {
-    code: 'CG 23/2026',
-    process: '182/2026',
-    object: 'OPMEs para ortopedia e coluna, com consignação e comodato · 24 meses',
-    opening: '04/11/2026',
-    status: 'REAGENDADO',
-  },
-  {
-    code: 'CG 20/2026',
-    process: '145/2026',
-    object: 'Fornecimento sob demanda de materiais médico-hospitalares · 24 meses',
-    opening: '06/07/2026',
-    status: 'HOMOLOGADO',
-  },
-  {
-    code: 'PC 19/2026',
-    process: '265/2026',
-    object: 'Consultoria: LTCAT, laudos de insalubridade e periculosidade, AET',
-    opening: '22/10/2026',
-    status: 'REAGENDADO',
-  },
-  {
-    code: 'PC 18/2026',
-    process: '257/2026',
-    object: 'Instrumentais cirúrgicos e ótica para videolaparoscopia',
-    opening: '14/09/2026',
-    status: 'HOMOLOGADO',
-  },
-  {
-    code: 'CG 17/2026',
-    process: '129/2026',
-    object: 'Materiais médico-hospitalares — fios cirúrgicos · 24 meses',
-    opening: '11/06/2026',
-    status: 'HOMOLOGADO',
+    label: 'Portaria HMDCC 28/2026',
+    href: 'https://www2.hmdcc.com.br/wp-content/uploads/2026/11/PORTARIA-HMDCC-No-028-Designa-empregados-para-funcoes-do-sistema-Licitacao-E.pdf',
   },
 ]
 
@@ -136,12 +93,37 @@ function statusColor(status: string) {
       return 'bg-teal-50 text-teal-800 ring-teal-600/20'
     case 'REAGENDADO':
       return 'bg-amber-50 text-amber-800 ring-amber-600/20'
+    case 'CANCELADO':
+    case 'VENCIDO':
+      return 'bg-rose-50 text-rose-800 ring-rose-600/20'
     default:
       return 'bg-petrol-50 text-petrol-700 ring-petrol-600/15'
   }
 }
 
+// Janela de páginas 1 … 4 5 6 … 50 (mesmo padrão do portal original)
+function pageWindow(current: number, total: number): (number | '…')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const pages = new Set<number>([1, total, current - 1, current, current + 1])
+  if (current <= 3) [2, 3, 4].forEach((p) => pages.add(p))
+  if (current >= total - 2) [total - 3, total - 2, total - 1].forEach((p) => pages.add(p))
+  const sorted = [...pages].filter((p) => p >= 1 && p <= total).sort((a, b) => a - b)
+  const out: (number | '…')[] = []
+  let prev = 0
+  for (const p of sorted) {
+    if (p - prev > 1) out.push('…')
+    out.push(p)
+    prev = p
+  }
+  return out
+}
+
 export function CareersProcurement() {
+  const [comprasPage, setComprasPage] = useState(1)
+  const totalPaginas = Math.ceil(compras.length / COMPRAS_POR_PAGINA)
+  const inicio = (comprasPage - 1) * COMPRAS_POR_PAGINA
+  const comprasVisiveis = compras.slice(inicio, inicio + COMPRAS_POR_PAGINA)
+
   return (
     <>
       {/* ------------------------------ Carreiras ------------------------------ */}
@@ -218,14 +200,19 @@ export function CareersProcurement() {
             </div>
           </Reveal>
 
-          {/* Editais */}
+          {/* Editais — arquivo completo: 47 registros, 2017–2026 */}
           <div className="mt-16">
             <Reveal>
-              <div className="mb-6 flex items-center gap-3">
-                <ScrollText className="h-4 w-4 text-teal-300" aria-hidden />
-                <h3 className="font-display text-lg font-medium text-white">
-                  Editais e resultados
-                </h3>
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <ScrollText className="h-4 w-4 text-teal-300" aria-hidden />
+                  <h3 className="font-display text-lg font-medium text-white">
+                    Editais e resultados
+                  </h3>
+                </div>
+                <span className="rounded-full bg-teal-500/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-teal-300 ring-1 ring-teal-400/25">
+                  {editais.length} editais · 2017–2026
+                </span>
               </div>
             </Reveal>
             <Reveal delay={0.1}>
@@ -235,10 +222,10 @@ export function CareersProcurement() {
                   <span>Ano</span>
                   <span>Status</span>
                 </div>
-                <div className="divide-y divide-white/[0.07]">
-                  {editais.map((item) => (
+                <div className="max-h-[520px] divide-y divide-white/[0.07] overflow-y-auto">
+                  {editais.map((item, i) => (
                     <div
-                      key={item.edital}
+                      key={`${item.year}-${i}`}
                       className="grid grid-cols-1 gap-2 bg-petrol-950/60 px-6 py-4 transition-colors hover:bg-petrol-900/70 md:grid-cols-[1fr_90px_140px] md:items-center md:gap-4"
                     >
                       <span className="text-sm font-medium text-petrol-100">
@@ -273,7 +260,7 @@ export function CareersProcurement() {
                   Relações com <em className="italic font-light text-teal-700">fornecedores</em>
                 </>
               }
-              description="Processos de aquisição conduzidos com transparência, nas modalidades abaixo. Consulte também o Banco de Marcas, o Regulamento de Compras e a Portaria HMDCC 28/2026."
+              description="Processos de aquisição conduzidos com transparência, nas modalidades CR, CG, CP e PC — arquivo histórico completo desde 2017."
               className="max-w-2xl"
             />
             <Reveal delay={0.15}>
@@ -293,16 +280,47 @@ export function CareersProcurement() {
             </Reveal>
           </div>
 
+          {/* Documentos oficiais — mesmos links do portal original */}
+          <Reveal delay={0.12}>
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
+                Documentos:
+              </span>
+              {comprasDocs.map((doc) => (
+                <a
+                  key={doc.label}
+                  href={doc.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-petrol-900/15 bg-white px-4 py-2 text-[12.5px] font-semibold text-petrol-900 transition-all hover:border-teal-600 hover:text-teal-700"
+                >
+                  {doc.label}
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                </a>
+              ))}
+            </div>
+          </Reveal>
+
           <Reveal delay={0.1}>
-            <div className="mt-12 overflow-hidden rounded-3xl border border-hairline bg-white shadow-sm">
+            <div className="mt-8 overflow-hidden rounded-3xl border border-hairline bg-white shadow-sm">
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[760px] text-left">
+                <table className="w-full min-w-[1080px] text-left">
                   <thead>
                     <tr className="border-b border-hairline bg-sand/60">
-                      {['Seleção', 'Processo', 'Objeto', 'Abertura', 'Situação'].map((h) => (
+                      {[
+                        'Seleção',
+                        'Processo',
+                        'Objeto',
+                        'Publicação',
+                        'Abertura',
+                        'Esclar./Impugnação',
+                        'Julgamento',
+                        'Homologação',
+                        'Situação',
+                      ].map((h) => (
                         <th
                           key={h}
-                          className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-soft"
+                          className="whitespace-nowrap px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-soft"
                         >
                           {h}
                         </th>
@@ -310,28 +328,43 @@ export function CareersProcurement() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-hairline">
-                    {procurement.map((row) => (
-                      <tr key={row.code} className="group transition-colors hover:bg-sand/40">
-                        <td className="whitespace-nowrap px-6 py-4">
+                    {comprasVisiveis.map((row, i) => (
+                      <tr
+                        key={`${row.code}-${i}`}
+                        className="group transition-colors hover:bg-sand/40"
+                      >
+                        <td className="whitespace-nowrap px-5 py-4">
                           <span className="font-display text-sm font-semibold text-petrol-900">
                             {row.code}
                           </span>
                         </td>
-                        <td className="tabular whitespace-nowrap px-6 py-4 text-sm text-ink-soft">
+                        <td className="tabular whitespace-nowrap px-5 py-4 text-sm text-ink-soft">
                           {row.process}
                         </td>
-                        <td className="px-6 py-4 text-sm leading-relaxed text-petrol-800">
-                          {row.object}
+                        <td className="max-w-[420px] px-5 py-4 text-sm leading-relaxed text-petrol-800">
+                          <span className="line-clamp-2">{row.object}</span>
                         </td>
-                        <td className="tabular whitespace-nowrap px-6 py-4 text-sm text-ink-soft">
-                          {row.opening}
+                        <td className="tabular whitespace-nowrap px-5 py-4 text-sm text-ink-soft">
+                          {row.publication || '—'}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="tabular whitespace-nowrap px-5 py-4 text-sm text-ink-soft">
+                          {row.opening || '—'}
+                        </td>
+                        <td className="tabular whitespace-nowrap px-5 py-4 text-sm text-ink-soft">
+                          {row.clarif || '—'}
+                        </td>
+                        <td className="tabular whitespace-nowrap px-5 py-4 text-sm text-ink-soft">
+                          {row.judgment || '—'}
+                        </td>
+                        <td className="tabular whitespace-nowrap px-5 py-4 text-sm text-ink-soft">
+                          {row.homolog || '—'}
+                        </td>
+                        <td className="px-5 py-4">
                           <Badge
                             variant="outline"
                             className={`border-0 text-[10px] font-semibold tracking-wider ${statusColor(row.status)}`}
                           >
-                            {row.status}
+                            {row.status || '—'}
                           </Badge>
                         </td>
                       </tr>
@@ -339,15 +372,60 @@ export function CareersProcurement() {
                   </tbody>
                 </table>
               </div>
+
+              {/* Paginação — mesmo comportamento do portal original */}
+              <div className="flex flex-col items-center justify-between gap-4 border-t border-hairline bg-ivory/70 px-6 py-4 sm:flex-row">
+                <p className="text-xs text-ink-soft">
+                  Mostrando <strong className="text-petrol-900">{inicio + 1}–{Math.min(inicio + COMPRAS_POR_PAGINA, compras.length)}</strong> de{' '}
+                  <strong className="text-petrol-900">{compras.length}</strong> processos
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => setComprasPage((p) => Math.max(1, p - 1))}
+                    disabled={comprasPage === 1}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-hairline bg-white text-petrol-900 transition-colors hover:bg-sand disabled:opacity-40"
+                    aria-label="Página anterior"
+                  >
+                    <ChevronLeft className="h-4 w-4" aria-hidden />
+                  </button>
+                  {pageWindow(comprasPage, totalPaginas).map((p, idx) =>
+                    p === '…' ? (
+                      <span key={`ellipsis-${idx}`} className="px-1.5 text-sm text-ink-soft">
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => setComprasPage(p as number)}
+                        className={`h-9 min-w-9 rounded-lg px-2 text-sm font-semibold transition-colors ${
+                          p === comprasPage
+                            ? 'bg-petrol-900 text-white'
+                            : 'border border-hairline bg-white text-petrol-900 hover:bg-sand'
+                        }`}
+                        aria-current={p === comprasPage ? 'page' : undefined}
+                      >
+                        {p}
+                      </button>
+                    )
+                  )}
+                  <button
+                    onClick={() => setComprasPage((p) => Math.min(totalPaginas, p + 1))}
+                    disabled={comprasPage === totalPaginas}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-hairline bg-white text-petrol-900 transition-colors hover:bg-sand disabled:opacity-40"
+                    aria-label="Próxima página"
+                  >
+                    <ChevronRight className="h-4 w-4" aria-hidden />
+                  </button>
+                </div>
+              </div>
             </div>
           </Reveal>
 
           <Reveal delay={0.2}>
             <p className="mt-6 text-xs leading-relaxed text-ink-soft">
-              Processos homologados e históricos completos, incluindo datas de
-              publicação, julgamento e homologação, estão disponíveis na área de
-              Compras do portal. Para dúvidas, fale com a nossa equipe de
-              Suprimentos.
+              Dados íntegros do sistema de compras do HMDCC — modalidades CR, CG, CP e
+              PC, com datas de publicação, esclarecimentos, julgamento e homologação.
+              Para dúvidas, fale com a nossa equipe de Suprimentos.
             </p>
           </Reveal>
         </div>
