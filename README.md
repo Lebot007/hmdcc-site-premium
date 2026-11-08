@@ -5,6 +5,7 @@
 ![Next.js](https://img.shields.io/badge/Next.js%2016-000?style=flat-square&logo=nextdotjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript%205-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS%204-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/deploy-GitHub%20Pages-121013?style=flat-square&logo=githubpages&logoColor=white)
 ![License](https://img.shields.io/badge/Licen%C3%A7a-MIT-00AB97?style=flat-square)
 
 ---
@@ -34,7 +35,7 @@ Todo o conteúdo institucional do portal original foi preservado — números, h
 | **FAQ** | 6 perguntas frequentes em acordeão acessível |
 | **Ouvidoria** | Canais, horários e modalidades de contato (identificado/anônimo) |
 | **Transparência** | 9 relatórios de gestão (2017–2025) |
-| **Contato** | Formulário funcional com captcha matemático e mapa |
+| **Contato** | Formulário com validação client-side, captcha matemático e mapa |
 | **LGPD** | Banner de cookies com consentimento persistente |
 
 ## 🛠️ Stack tecnológica
@@ -45,7 +46,9 @@ Todo o conteúdo institucional do portal original foi preservado — números, h
 - **[shadcn/ui](https://ui.shadcn.com)** + **Radix UI** — componentes acessíveis (New York style)
 - **[Framer Motion](https://www.framer.app/motion/)** — animações e microinterações
 - **[Lucide React](https://lucide.dev)** — iconografia
-- **API Routes** — endpoint de contato com validação server-side
+- **GitHub Pages** — hospedagem estática com deploy automático via GitHub Actions
+
+O site é gerado como **export 100% estático** (`next build` com `output: "export"`), sem dependência de servidor Node — o formulário de contato valida os dados no cliente (compatível com hospedagem estática).
 
 ## 🎨 Design system
 
@@ -72,17 +75,34 @@ bun run dev        # ou npm run dev
 # Verificação de qualidade
 bun run lint       # ESLint
 
-# Banco de dados (Prisma + SQLite)
-bun run db:push
+# Build estático (mesmo output do deploy do GitHub Pages)
+STATIC_EXPORT=true NEXT_PUBLIC_BASE_PATH=/hmdcc-site-premium bun run build:static
+# → site 100% estático em ./out
 ```
+
+## 🌐 Deploy — GitHub Pages
+
+**URL de produção:** <https://lebot007.github.io/hmdcc-site-premium/>
+
+O deploy é **automático** a cada push na branch `main`, via [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml):
+
+1. `bun install --frozen-lockfile` — instala as dependências
+2. `next build` com `STATIC_EXPORT=true` e `NEXT_PUBLIC_BASE_PATH=/hmdcc-site-premium` — gera o site estático em `./out`
+3. O artefato é publicado no GitHub Pages (`actions/deploy-pages`)
+
+Como o Pages atende o site em `/hmdcc-site-premium/` (e não na raiz do domínio), o `basePath` injeta o prefixo em todos os assets; para as imagens do `next/image` isso é feito pelo loader customizado `image-loader.mjs`, já que o modo de export estático não aplica o `basePath` automaticamente.
+
+> Para publicar em um **domínio próprio** (ex.: `hmdcc.com.br`), remova a variável `NEXT_PUBLIC_BASE_PATH` e aponte um `CNAME` para o Pages — nenhuma outra alteração é necessária.
 
 ## 📁 Estrutura do projeto
 
 ```
+.github/workflows/
+└── deploy.yml                 # CI/CD — build estático + deploy no GitHub Pages
 src/
 ├── app/
-│   ├── api/contact/route.ts   # Endpoint do formulário de contato
 │   ├── globals.css            # Design tokens e tema HMDCC
+│   ├── icon.png               # Favicon oficial do hospital (hmdcc_verde.ico)
 │   ├── layout.tsx             # Fontes (Fraunces + Inter) e metadados
 │   └── page.tsx               # Montagem da página única
 ├── components/
@@ -101,6 +121,8 @@ src/
 │   │   └── footer.tsx         # Rodapé + banner de cookies
 │   └── ui/                    # shadcn/ui (Radix)
 └── lib/                       # Utilitários
+image-loader.mjs               # Loader de imagens com basePath (export estático)
+next.config.ts                 # Switch standalone ↔ export estático via env
 public/images/
 ├── hero-fachada.jpg           # Fachada real do hospital
 ├── estrutura/                 # 17 fotos reais dos ambientes
