@@ -1,0 +1,154 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-body: var(--font-body);
+  --font-display: var(--font-display);
+  --font-mono: ui-monospace, monospace;
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* HMDCC brand palette */
+  --color-petrol-50: #f2f7f8;
+  --color-petrol-100: #e3edf0;
+  --color-petrol-200: #c3d9df;
+  --color-petrol-300: #93bcc7;
+  --color-petrol-400: #5d99a9;
+  --color-petrol-500: #3d7c8e;
+  --color-petrol-600: #2d6375;
+  --color-petrol-700: #275261;
+  --color-petrol-800: #16414f;
+  --color-petrol-900: #0f4654;
+  --color-petrol-950: #082e38;
+
+  --color-teal-50: #ecfdf9;
+  --color-teal-100: #d0f9f0;
+  --color-teal-200: #a4f2e4;
+  --color-teal-300: #6de5d4;
+  --color-teal-400: #35d2be;
+  --color-teal-500: #0db8a5;
+  --color-teal-600: #00ab97;
+  --color-teal-700: #008a7c;
+  --color-teal-800: #066f65;
+  --color-teal-900: #085c55;
+  --color-teal-950: #003b37;
+
+  --color-ivory: #faf9f6;
+  --color-sand: #f3f1ea;
+  --color-hairline: #e6e2d8;
+  --color-ink: #17282e;
+  --color-ink-soft: #4c5f66;
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: #faf9f6;
+  --foreground: #17282e;
+  --card: #ffffff;
+  --card-foreground: #17282e;
+  --popover: #ffffff;
+  --popover-foreground: #17282e;
+  --primary: #0f4654;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f1ea;
+  --secondary-foreground: #17282e;
+  --muted: #f3f1ea;
+  --muted-foreground: #4c5f66;
+  --accent: #00ab97;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #e6e2d8;
+  --input: #e6e2d8;
+  --ring: #00ab97;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 110px;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    background: #00ab97;
+    color: #fff;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display), Georgia, serif;
+  }
+  .font-body {
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Elegant thin scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f3f1ea;
+}
+::-webkit-scrollbar-thumb {
+  background: #c3d9df;
+  border-radius: 8px;
+  border: 2px solid #f3f1ea;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5d99a9;
+}
+
+/* Subtle premium grain for dark sections */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Fine line pattern for hero */
+.blueprint {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
