@@ -1,8 +1,13 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
-import { ArrowUpRight, CalendarDays } from 'lucide-react'
+import { ArrowUpRight, CalendarDays, ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Reveal, Section, SectionHeader, Counter } from './bits'
+import { allNews, type NewsItem } from '@/data/news'
+
+const NEWS_POR_PAGINA = 10
 
 const stats = [
   { value: 142095, label: 'Internações hospitalares' },
@@ -14,102 +19,44 @@ const stats = [
   { value: 7863999, label: 'Exames laboratoriais' },
 ]
 
-const news = [
-  {
-    day: '30',
-    month: 'out',
-    year: 2026,
-    tag: 'Segurança do Paciente',
-    image: '/images/noticias/seminario-realizado.jpg',
-    alt: 'I Seminário de Segurança do Paciente do Hospital Célio de Castro',
-    title:
-      'Hospital Célio de Castro estreia I Seminário de Segurança do Paciente com casa cheia',
-    excerpt:
-      'Vagas esgotadas, programação de qualidade e público interessado marcaram a primeira edição do seminário, uma iniciativa do Grupo Acelerador de Prevenção de Lesão por Pressão.',
-  },
-  {
-    day: '09',
-    month: 'out',
-    year: 2026,
-    tag: 'Reconhecimento',
-    image: '/images/noticias/premio-ser-humano.jpg',
-    alt: 'Equipe do HMDCC premiada no Prêmio Ser Humano',
-    title: 'Célio de Castro vence duas categorias do Prêmio Ser Humano 2026',
-    excerpt:
-      'Uma noite de emoção: a instituição saiu vencedora em duas categorias de um dos maiores reconhecimentos em gestão de pessoas do país, promovido pela ABRH.',
-  },
-  {
-    day: '06',
-    month: 'out',
-    year: 2026,
-    tag: 'Inovação',
-    image: '/images/noticias/trombectomia.jpg',
-    alt: 'Serviço de Trombectomia Mecânica do HMDCC',
-    title:
-      'HMDCC é primeiro hospital do SUS-BH a ofertar trombectomia mecânica para tratamento do AVC',
-    excerpt:
-      'O serviço foi inaugurado na maior Unidade de AVC de Minas Gerais — e a instituição é também a segunda do estado a oferecer o procedimento aos usuários do SUS.',
-  },
-  {
-    day: '01',
-    month: 'out',
-    year: 2026,
-    tag: 'Eventos',
-    image: '/images/noticias/seminario-inscricoes.jpg',
-    alt: 'Inscrições abertas para o I Seminário de Segurança do Paciente',
-    title:
-      'Inscreva-se no I Seminário de Segurança do Paciente do Hospital Célio de Castro',
-    excerpt:
-      'Evento gratuito e aberto a profissionais de saúde de outras instituições, com o olhar multiprofissional para a prevenção de lesão por pressão.',
-  },
-  {
-    day: '28',
-    month: 'set',
-    year: 2026,
-    tag: 'Ensino',
-    image: '/images/noticias/residencia-medica.jpg',
-    alt: 'Residência Médica 2027 do Hospital Célio de Castro',
-    title: 'Hospital Célio de Castro oferta 36 vagas para residência médica',
-    excerpt:
-      'Inscrições abertas para os Programas de Residência Médica via PSU — incluindo o novo programa de geriatria, que estreia em 2027.',
-  },
-  {
-    day: '19',
-    month: 'set',
-    year: 2026,
-    tag: 'Institucional',
-    image: '/images/noticias/video-institucional.jpg',
-    alt: 'Vídeo institucional do Hospital Célio de Castro',
-    title: 'O gigante que a gente sente. Hospital Célio de Castro lança novo vídeo',
-    excerpt:
-      'Nascido no aniversário de Belo Horizonte como um presente para a população, o hospital celebra um modelo de gestão pioneiro que hoje é referência para todo o país.',
-  },
-  {
-    day: '21',
-    month: 'ago',
-    year: 2026,
-    tag: 'Mutirão',
-    image: '/images/noticias/brasil-sem-varizes.jpg',
-    alt: 'Mutirão Brasil Sem Varizes',
-    title: "Hospital Célio de Castro presente no mutirão 'Brasil Sem Varizes'",
-    excerpt:
-      'Uma convocação nacional mobilizou 100 serviços de saúde. Em um só dia, 1.191 cirurgias foram realizadas em 18 estados — com o HMDCC entre as instituições mineiras participantes.',
-  },
-  {
-    day: '13',
-    month: 'ago',
-    year: 2026,
-    tag: 'Qualidade',
-    image: '/images/noticias/nota-100.jpg',
-    alt: 'Nota 100 no NPS de satisfação dos pacientes',
-    title:
-      'Hospital Célio de Castro recebe nota 100 de pacientes pelo sétimo mês seguido',
-    excerpt:
-      'Na zona de excelência da pesquisa de satisfação NPS há mais de cinco anos, o hospital registrou nota 100 de janeiro a julho de 2026 — reconhecimento da qualidade e da segurança do cuidado.',
-  },
-]
+// Tags temáticas derivadas do título — mesmo padrão visual das notícias curadas
+function tagFor(title: string): string {
+  const t = title.toLowerCase()
+  if (/avc|trombectomia|neuro/.test(t)) return 'Neurociências'
+  if (/resid|fellowship|formatura|residentes|estud/.test(t)) return 'Ensino'
+  if (/recorde|cirurgias|consulta/.test(t)) return 'Resultados'
+  if (/nps|nota 100|selo|certific|qualidade/.test(t)) return 'Qualidade'
+  if (/pr[eê]mio|vence|ouro|reconhec/.test(t)) return 'Reconhecimento'
+  if (/mutir|doa[cç]/.test(t)) return 'Mutirão'
+  if (/semin[aá]rio|simp[oó]sio|f[oó]rum|evento|semana/.test(t)) return 'Eventos'
+  if (/covid|pandemia/.test(t)) return 'COVID-19'
+  return 'Institucional'
+}
+
+// Janela de páginas 1 … 4 5 6 … 28 (mesmo padrão do portal original)
+function pageWindow(current: number, total: number): (number | '…')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const pages = new Set<number>([1, total, current - 1, current, current + 1])
+  if (current <= 3) [2, 3, 4].forEach((p) => pages.add(p))
+  if (current >= total - 2) [total - 3, total - 2, total - 1].forEach((p) => pages.add(p))
+  const sorted = [...pages].filter((p) => p >= 1 && p <= total).sort((a, b) => a - b)
+  const out: (number | '…')[] = []
+  let prev = 0
+  for (const p of sorted) {
+    if (p - prev > 1) out.push('…')
+    out.push(p)
+    prev = p
+  }
+  return out
+}
 
 export function StatsAndNews() {
+  const [page, setPage] = useState(1)
+  const [lendo, setLendo] = useState<NewsItem | null>(null)
+  const totalPaginas = Math.ceil(allNews.length / NEWS_POR_PAGINA)
+  const inicio = (page - 1) * NEWS_POR_PAGINA
+  const noticias = allNews.slice(inicio, inicio + NEWS_POR_PAGINA)
+
   return (
     <>
       {/* ------------------------------ Em números ----------------------------- */}
@@ -189,32 +136,27 @@ export function StatsAndNews() {
                   Últimas <em className="italic font-light text-teal-700">notícias</em>
                 </>
               }
+              description={`O arquivo completo da comunicação institucional — ${allNews.length} notícias publicadas desde abril de 2020.`}
               className="max-w-xl"
             />
             <Reveal delay={0.15}>
-              <a
-                href="https://www.hmdcc.com.br/noticias"
-                target="_blank"
-                rel="noreferrer"
-                className="group inline-flex items-center gap-2 rounded-full border border-petrol-900/15 px-6 py-3 text-sm font-semibold text-petrol-900 transition-all hover:border-petrol-900 hover:bg-petrol-900 hover:text-white"
-              >
-                Ver mais notícias
-                <ArrowUpRight
-                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  aria-hidden
-                />
-              </a>
+              <span className="inline-flex items-center gap-2 rounded-full bg-petrol-900 px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-white">
+                {allNews.length} notícias · 2020–2026
+              </span>
             </Reveal>
           </div>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {news.map((item, i) => (
-              <Reveal key={item.title} delay={0.05 * (i % 4)}>
-                <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-hairline bg-ivory transition-all duration-300 hover:-translate-y-1.5 hover:border-petrol-200 hover:bg-white hover:shadow-xl hover:shadow-petrol-950/[0.09]">
+            {noticias.map((item, i) => (
+              <Reveal key={`${item.day}-${item.month}-${item.year}-${i}`} delay={0.05 * (i % 4)}>
+                <article
+                  className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-hairline bg-ivory text-left transition-all duration-300 hover:-translate-y-1.5 hover:border-petrol-200 hover:bg-white hover:shadow-xl hover:shadow-petrol-950/[0.09]"
+                  onClick={() => setLendo(item)}
+                >
                   <div className="relative aspect-[900/407] overflow-hidden">
                     <Image
                       src={item.image}
-                      alt={item.alt}
+                      alt={item.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.06]"
@@ -224,7 +166,7 @@ export function StatsAndNews() {
                       aria-hidden
                     />
                     <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/92 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-petrol-900 backdrop-blur-sm">
-                      {item.tag}
+                      {tagFor(item.title)}
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col p-6">
@@ -250,7 +192,120 @@ export function StatsAndNews() {
               </Reveal>
             ))}
           </div>
+
+          {/* Paginação — mesmo comportamento do portal original */}
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <p className="text-xs text-ink-soft">
+              Página <strong className="text-petrol-900">{page}</strong> de{' '}
+              <strong className="text-petrol-900">{totalPaginas}</strong> — mostrando{' '}
+              <strong className="text-petrol-900">
+                {inicio + 1}–{Math.min(inicio + NEWS_POR_PAGINA, allNews.length)}
+              </strong>{' '}
+              de <strong className="text-petrol-900">{allNews.length}</strong> notícias
+            </p>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => {
+                  setPage((p) => Math.max(1, p - 1))
+                  document.getElementById('noticias')?.scrollIntoView({ behavior: 'smooth' })
+                }}
+                disabled={page === 1}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-hairline bg-white text-petrol-900 transition-colors hover:bg-sand disabled:opacity-40"
+                aria-label="Página anterior"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden />
+              </button>
+              {pageWindow(page, totalPaginas).map((p, idx) =>
+                p === '…' ? (
+                  <span key={`ellipsis-${idx}`} className="px-1.5 text-sm text-ink-soft">
+                    …
+                  </span>
+                ) : (
+                  <button
+                    key={p}
+                    onClick={() => {
+                      setPage(p as number)
+                      document.getElementById('noticias')?.scrollIntoView({ behavior: 'smooth' })
+                    }}
+                    className={`h-9 min-w-9 rounded-lg px-2 text-sm font-semibold transition-colors ${
+                      p === page
+                        ? 'bg-petrol-900 text-white'
+                        : 'border border-hairline bg-white text-petrol-900 hover:bg-sand'
+                    }`}
+                    aria-current={p === page ? 'page' : undefined}
+                  >
+                    {p}
+                  </button>
+                )
+              )}
+              <button
+                onClick={() => {
+                  setPage((p) => Math.min(totalPaginas, p + 1))
+                  document.getElementById('noticias')?.scrollIntoView({ behavior: 'smooth' })
+                }}
+                disabled={page === totalPaginas}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-hairline bg-white text-petrol-900 transition-colors hover:bg-sand disabled:opacity-40"
+                aria-label="Próxima página"
+              >
+                <ChevronRight className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
+          </div>
         </div>
+
+        {/* Modal de leitura da notícia */}
+        <AnimatePresence>
+          {lendo && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[70] flex items-center justify-center bg-petrol-950/70 p-4 backdrop-blur-sm"
+              onClick={() => setLendo(null)}
+              role="dialog"
+              aria-modal="true"
+              aria-label={lendo.title}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 24, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 24, scale: 0.98 }}
+                transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+                className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setLendo(null)}
+                  className="absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-petrol-900 shadow-md backdrop-blur-sm transition-colors hover:bg-white"
+                  aria-label="Fechar"
+                >
+                  <X className="h-5 w-5" aria-hidden />
+                </button>
+                <div className="relative aspect-[900/407]">
+                  <Image
+                    src={lendo.image}
+                    alt={lendo.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 672px"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-8">
+                  <span className="flex items-center gap-1.5 text-xs font-medium text-ink-soft">
+                    <CalendarDays className="h-3.5 w-3.5 text-teal-600" aria-hidden />
+                    {lendo.day} de {lendo.month} de {lendo.year}
+                  </span>
+                  <h3 className="mt-3 font-display text-2xl font-medium leading-snug tracking-tight text-petrol-900">
+                    {lendo.title}
+                  </h3>
+                  <p className="mt-4 whitespace-pre-line text-[15px] leading-relaxed text-petrol-800">
+                    {lendo.excerpt}
+                  </p>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Section>
     </>
   )
