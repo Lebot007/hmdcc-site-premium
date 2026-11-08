@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   CalendarClock,
   CheckCircle2,
@@ -34,8 +34,15 @@ function OuvidoriaChannel() {
   const [modo, setModo] = useState<'identificado' | 'anonimo'>('identificado')
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
-  const [captchaA] = useState(() => Math.floor(Math.random() * 8) + 2)
-  const [captchaB] = useState(() => Math.floor(Math.random() * 8) + 1)
+  // Desafio matemático: valores fixos no HTML estático e re-randomizados
+  // após a hidratação (evita o erro React #418 de divergência SSR/cliente).
+  const [captchaA, setCaptchaA] = useState(4)
+  const [captchaB, setCaptchaB] = useState(3)
+
+  useEffect(() => {
+    setCaptchaA(Math.floor(Math.random() * 8) + 2)
+    setCaptchaB(Math.floor(Math.random() * 8) + 1)
+  }, [])
   const [nomeArquivo, setNomeArquivo] = useState('')
 
   const inputClasse =

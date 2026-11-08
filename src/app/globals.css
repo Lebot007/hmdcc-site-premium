@@ -154,33 +154,165 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Alto contraste (acessibilidade) — mesmo recurso do portal original  */
-/* Reforça textos suavizados, divisórias e imagens para leitura mais   */
-/* confortável por pessoas com baixa visão.                            */
+/* Alto contraste (acessibilidade) — mesmo recurso do portal original. */
+/* Liga um tema escuro de alta legibilidade no site inteiro: superfí-  */
+/* cies pretas, texto branco, acentos amarelos e bordas reforçadas.    */
+/* Desligar restaura o tema claro padrão (a classe mora no <html>).    */
 /* ------------------------------------------------------------------ */
-html.alto-contraste [class*="text-ink-soft"] {
-  color: #1c2c31 !important;
+html.alto-contraste {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0d0d0d;
+  --popover: #0d0d0d;
+  --primary: #ffdd00;
+  --primary-foreground: #000000;
+  --muted: #161616;
+  --muted-foreground: #cfcfcf;
+  --border: #a3a3a3;
+  --input: #a3a3a3;
+  --ring: #ffdd00;
 }
-html.alto-contraste [class*="text-petrol-100/"] {
-  color: #f0faf9 !important;
+
+/* --- Superfícies claras -> pretas --------------------------------- */
+html.alto-contraste [class~="bg-ivory"],
+html.alto-contraste [class~="bg-ivory/70"],
+html.alto-contraste [class~="bg-ivory/90"],
+html.alto-contraste [class~="bg-petrol-900"],
+html.alto-contraste [class~="bg-petrol-950"] {
+  background-color: #000000 !important;
 }
-html.alto-contraste [class*="text-petrol-200"] {
-  color: #d3efeb !important;
+html.alto-contraste [class~="bg-sand"],
+html.alto-contraste [class~="bg-sand/40"],
+html.alto-contraste [class~="bg-sand/50"],
+html.alto-contraste [class~="bg-sand/60"],
+html.alto-contraste [class~="bg-petrol-50"],
+html.alto-contraste [class~="bg-teal-50"] {
+  background-color: #0a0a0a !important;
 }
-html.alto-contraste [class*="text-petrol-300"] {
-  color: #c3e9e3 !important;
+html.alto-contraste [class~="bg-white"],
+html.alto-contraste [class~="bg-white/80"],
+html.alto-contraste [class~="bg-white/90"],
+html.alto-contraste [class~="bg-white/92"] {
+  background-color: #0d0d0d !important;
 }
-html.alto-contraste [class*="text-petrol-800"] {
-  color: #0a3540 !important;
+html.alto-contraste [class~="bg-white/5"],
+html.alto-contraste [class~="bg-white/10"],
+html.alto-contraste [class~="bg-white/15"],
+html.alto-contraste [class~="bg-white/20"],
+html.alto-contraste [class~="bg-white/[0.04]"] {
+  background-color: rgba(255, 255, 255, 0.12) !important;
 }
-html.alto-contraste [class*="text-white/"] {
+html.alto-contraste [class~="bg-black/50"] {
+  background-color: rgba(0, 0, 0, 0.82) !important;
+}
+html.alto-contraste [class~="bg-hairline"] {
+  background-color: #a3a3a3 !important;
+}
+/* Brilho decorativo claro some no tema escuro */
+html.alto-contraste [class~="from-teal-100/60"] {
+  background-image: none !important;
+}
+
+/* --- Botões de ação: amarelo com texto/ícone pretos ---------------- */
+html.alto-contraste [class~="bg-teal-600"],
+html.alto-contraste [class~="bg-teal-500"],
+html.alto-contraste [class~="bg-teal-400"],
+html.alto-contraste a[class~="bg-petrol-900"],
+html.alto-contraste button[class~="bg-petrol-900"] {
+  background-color: #ffdd00 !important;
+}
+html.alto-contraste a[class~="bg-teal-600"],
+html.alto-contraste button[class~="bg-teal-600"],
+html.alto-contraste a[class~="bg-petrol-900"],
+html.alto-contraste button[class~="bg-petrol-900"] {
+  color: #000000 !important;
+}
+html.alto-contraste [class~="bg-teal-600"] > *,
+html.alto-contraste [class~="bg-teal-500"] > *,
+html.alto-contraste [class~="bg-teal-400"] > *,
+html.alto-contraste a[class~="bg-petrol-900"] > *,
+html.alto-contraste button[class~="bg-petrol-900"] > * {
+  color: #000000 !important;
+}
+
+/* --- Hovers sobre o tema escuro ----------------------------------- */
+html.alto-contraste [class~="hover:bg-sand"]:hover,
+html.alto-contraste [class~="hover:bg-petrol-900/[0.06]"]:hover {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+}
+html.alto-contraste [class~="hover:bg-white/20"]:hover {
+  background-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+/* --- Texto escuro -> branco ---------------------------------------- */
+html.alto-contraste [class*="text-ink-soft"],
+html.alto-contraste [class~="text-petrol-700"],
+html.alto-contraste [class~="text-petrol-800"],
+html.alto-contraste [class*="text-petrol-900"],
+html.alto-contraste [class~="text-petrol-950"] {
   color: #ffffff !important;
 }
-html.alto-contraste [class*="border-hairline"] {
-  border-color: #7d776b !important;
+/* Texto claro sobre seções escuras -> branco puro */
+html.alto-contraste [class*="text-petrol-100"],
+html.alto-contraste [class*="text-petrol-200"],
+html.alto-contraste [class*="text-petrol-300"],
+html.alto-contraste [class*="text-ivory"],
+html.alto-contraste [class*="text-white"] {
+  color: #ffffff !important;
+}
+/* Acentos e links -> amarelo alto contraste */
+html.alto-contraste [class*="text-teal-600"],
+html.alto-contraste [class*="text-teal-700"],
+html.alto-contraste [class*="text-teal-800"] {
+  color: #ffdd00 !important;
+}
+/* Acentos claros (teal) permanecem vivos sobre o preto */
+html.alto-contraste [class*="text-teal-200"],
+html.alto-contraste [class*="text-teal-300"],
+html.alto-contraste [class*="text-teal-400"] {
+  color: #4df0e0 !important;
+}
+/* Numerais decorativos gigantes: mais presentes no tema escuro, mas
+   sem competir com o conteúdo (regras sempre por último)            */
+html.alto-contraste [class~="text-petrol-900/15"] {
+  color: rgba(255, 255, 255, 0.42) !important;
+}
+html.alto-contraste [class*="text-white/[0.07]"] {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* --- Bordas e anéis reforçados ------------------------------------- */
+html.alto-contraste [class*="border-hairline"],
+html.alto-contraste [class~="border-petrol-200"],
+html.alto-contraste [class~="border-petrol-300"],
+html.alto-contraste [class*="border-petrol-900"] {
+  border-color: #a3a3a3 !important;
 }
 html.alto-contraste [class*="border-white/"] {
-  border-color: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.65) !important;
+}
+html.alto-contraste [class*="border-teal-"] {
+  border-color: #00d9c0 !important;
+}
+html.alto-contraste [class*="ring-teal-"],
+html.alto-contraste [class*="ring-petrol-"] {
+  --tw-ring-color: rgba(0, 229, 204, 0.7) !important;
+}
+html.alto-contraste [class*="decoration-teal-"] {
+  text-decoration-color: #ffdd00 !important;
+}
+
+/* --- Detalhes ------------------------------------------------------ */
+html.alto-contraste ::selection {
+  background: #ffdd00;
+  color: #000000;
+}
+html.alto-contraste ::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+html.alto-contraste ::-webkit-scrollbar-thumb {
+  background: #5a5a5a;
+  border-color: #0a0a0a;
 }
 html.alto-contraste img {
   filter: contrast(1.08);

@@ -187,6 +187,14 @@ export function CookiePolicyLink({ className, children }: { className?: string; 
 }
 
 export function Footer() {
+  // Ano corrente só após a hidratação: o HTML estático é gerado no build e
+  // um `new Date()` no render divergiria do cliente (erro React #418).
+  const [ano, setAno] = useState(2026)
+
+  useEffect(() => {
+    setAno(new Date().getFullYear())
+  }, [])
+
   return (
     <footer className="grain relative mt-auto bg-petrol-950 text-petrol-100">
       <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -278,7 +286,7 @@ export function Footer() {
               className="h-10 w-auto opacity-90 transition-opacity hover:opacity-100"
             />
             <p className="text-xs text-petrol-100/50">
-              © {new Date().getFullYear()} Hospital Metropolitano Dr. Célio de Castro ·
+              © {ano} Hospital Metropolitano Dr. Célio de Castro ·
               Todos os direitos reservados.
             </p>
           </div>

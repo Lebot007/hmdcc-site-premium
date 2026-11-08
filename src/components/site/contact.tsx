@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { CheckCircle2, Loader2, MapPin, Phone, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -21,8 +21,16 @@ export function Contact() {
   const { toast } = useToast()
   const [sending, setSending] = useState(false)
   const [reason, setReason] = useState('informacoes')
-  const [captchaA] = useState(() => Math.floor(Math.random() * 8) + 2)
-  const [captchaB] = useState(() => Math.floor(Math.random() * 8) + 1)
+  // Desafio matemático anti-spam: valores fixos no HTML estático e
+  // re-randomizados no cliente após a hidratação (evita o erro React #418
+  // de divergência entre servidor e cliente).
+  const [captchaA, setCaptchaA] = useState(4)
+  const [captchaB, setCaptchaB] = useState(3)
+
+  useEffect(() => {
+    setCaptchaA(Math.floor(Math.random() * 8) + 2)
+    setCaptchaB(Math.floor(Math.random() * 8) + 1)
+  }, [])
   const [sent, setSent] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
