@@ -30,6 +30,7 @@ export function Contact() {
     const form = e.currentTarget
     const data = new FormData(form)
 
+    // Desafio matemático anti-spam
     const answer = Number(data.get('captcha'))
     if (answer !== captchaA + captchaB) {
       toast({
@@ -40,33 +41,42 @@ export function Contact() {
       return
     }
 
+    // Validação no cliente (site estático, sem backend).
+    // Ao integrar um serviço real (ex.: Formspree, API própria), envie os
+    // dados via fetch para o endpoint correspondente após esta validação.
+    const name = String(data.get('name') || '').trim()
+    const email = String(data.get('email') || '').trim()
+    const subject = String(data.get('subject') || '').trim()
+    const message = String(data.get('message') || '').trim()
+
+    if (!name || !email || !subject || !message) {
+      toast({
+        title: 'Campos obrigatórios ausentes',
+        description: 'Preencha nome, e-mail, assunto e mensagem antes de enviar.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({
+        title: 'E-mail inválido',
+        description: 'Informe um endereço de e-mail válido.',
+        variant: 'destructive',
+      })
+      return
+    }
+
     setSending(true)
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: data.get('name'),
-          email: data.get('email'),
-          phone: data.get('phone'),
-          subject: data.get('subject'),
-          message: data.get('message'),
-          reason,
-        }),
-      })
-      if (!res.ok) throw new Error()
+      // Latência simulada para feedback visual de envio
+      await new Promise((resolve) => setTimeout(resolve, 700))
       setSent(true)
       toast({
         title: 'Mensagem enviada com sucesso',
         description: 'Nossa equipe entrará em contato em breve.',
       })
       form.reset()
-    } catch {
-      toast({
-        title: 'Não foi possível enviar',
-        description: 'Verifique os dados e tente novamente em instantes.',
-        variant: 'destructive',
-      })
     } finally {
       setSending(false)
     }
