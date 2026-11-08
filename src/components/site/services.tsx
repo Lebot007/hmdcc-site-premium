@@ -6,6 +6,8 @@ import {
   BadgeCheck,
   BookOpenCheck,
   Brain,
+  Building2,
+  ExternalLink,
   FileBadge,
   FlaskConical,
   GraduationCap,
@@ -305,6 +307,93 @@ export function Services() {
                 </Reveal>
               ))}
             </div>
+          </div>
+
+          {/* -------------------- Visitas técnicas (benchmarking + NEPE) -------------------- */}
+          <div className="mt-16 grid gap-5 lg:grid-cols-2">
+            <Reveal delay={0.05}>
+              <div className="h-full rounded-3xl border border-hairline bg-sand/50 p-8">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-600">
+                  <Building2 className="h-5 w-5 text-white" aria-hidden />
+                </span>
+                <h3 className="mt-5 font-display text-xl font-medium text-petrol-900">
+                  Visita técnica de benchmarking
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                  O HMDCC está aberto para receber representantes de hospitais, empresas,
+                  instituições e órgãos públicos ou privados interessados em conhecer suas
+                  áreas, rotinas e processos assistenciais e administrativos. As
+                  solicitações são analisadas e aprovadas conforme as diretrizes
+                  institucionais e a disponibilidade da área solicitada.
+                </p>
+                <a
+                  href="https://www.hmdcc.com.br/formulario-de-visita-tecnica"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group mt-5 inline-flex items-center gap-2 text-sm font-semibold text-teal-700"
+                >
+                  Solicitar visita de benchmarking
+                  <ExternalLink className="h-4 w-4" aria-hidden />
+                </a>
+                <p className="mt-3 text-xs text-ink-soft">
+                  Dúvidas:{' '}
+                  <a
+                    href="mailto:benchmarking@hmdcc.com.br"
+                    className="font-medium text-petrol-800 underline decoration-teal-600/40 underline-offset-2 hover:text-teal-700"
+                  >
+                    benchmarking@hmdcc.com.br
+                  </a>
+                </p>
+              </div>
+            </Reveal>
+            <Reveal delay={0.12}>
+              <div className="h-full rounded-3xl border border-hairline bg-sand/50 p-8">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-petrol-900">
+                  <GraduationCap className="h-5 w-5 text-teal-300" aria-hidden />
+                </span>
+                <h3 className="mt-5 font-display text-xl font-medium text-petrol-900">
+                  Visita técnico-acadêmica
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                  Destinada a estudantes, oferece uma visão da dinâmica hospitalar e o
+                  contato com a aplicação prática dos conteúdos aprendidos em sala de aula
+                  — restrita à observação da técnica e entrevista com profissional, conforme
+                  aprovação do responsável pela área.
+                </p>
+                <ul className="mt-4 space-y-2 text-[13px] leading-relaxed text-ink-soft">
+                  <li className="flex gap-2.5">
+                    <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-teal-600" aria-hidden />
+                    Máximo de 18 visitantes por dia; grupos de 6 pessoas na assistência
+                  </li>
+                  <li className="flex gap-2.5">
+                    <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-teal-600" aria-hidden />
+                    O solicitante deve ser o docente responsável pelo grupo
+                  </li>
+                  <li className="flex gap-2.5">
+                    <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-teal-600" aria-hidden />
+                    Agendamento por ordem de solicitação, sem fins de semana nem período noturno
+                  </li>
+                </ul>
+                <a
+                  href="https://www.hmdcc.com.br/solicitacao-para-visita-tecnica-nepe"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group mt-5 inline-flex items-center gap-2 text-sm font-semibold text-teal-700"
+                >
+                  Solicitar visita técnico-acadêmica
+                  <ExternalLink className="h-4 w-4" aria-hidden />
+                </a>
+                <p className="mt-3 text-xs text-ink-soft">
+                  Dúvidas:{' '}
+                  <a
+                    href="mailto:ensino.pesquisa@hmdcc.com.br"
+                    className="font-medium text-petrol-800 underline decoration-teal-600/40 underline-offset-2 hover:text-teal-700"
+                  >
+                    ensino.pesquisa@hmdcc.com.br
+                  </a>
+                </p>
+              </div>
+            </Reveal>
           </div>
         </div>
       </Section>

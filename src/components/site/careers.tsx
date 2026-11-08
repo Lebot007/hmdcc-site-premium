@@ -27,16 +27,19 @@ const jobCategories = [
     icon: Stethoscope,
     title: 'Especialidades Médicas',
     text: 'Banco de currículos para médicos especialistas nas diversas áreas da instituição.',
+    href: 'https://docs.google.com/forms/d/e/1FAIpQLScO6Renwh1UhFJbivbkTnzTvbairawdZLme_NNP2lcJTfzmkQ/viewform',
   },
   {
     icon: Briefcase,
     title: 'Enfermagem',
     text: 'Enfermeiros, técnicos e auxiliares de enfermagem para as linhas de cuidado.',
+    href: 'https://docs.google.com/forms/d/e/1FAIpQLSeF7fEtJzMbN6At8CLe4zb0c-2i_881SSI1MN5s_HDV9xqZbw/viewform',
   },
   {
     icon: ClipboardList,
     title: 'Demais funções',
     text: 'Profissionais administrativos e de apoio para todas as áreas do hospital.',
+    href: 'https://docs.google.com/forms/d/e/1FAIpQLSfGZZVfpviLQ_PEGMicAJYoXQ88glJEM5y-nG9ceyAqJGOE9Q/viewform',
   },
 ]
 
@@ -144,17 +147,26 @@ export function CareersProcurement() {
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             {jobCategories.map((item, i) => (
               <Reveal key={item.title} delay={0.07 * i}>
-                <div className="group h-full rounded-3xl border border-white/10 bg-petrol-900/60 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-teal-400/30">
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex h-full flex-col rounded-3xl border border-white/10 bg-petrol-900/60 p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-teal-400/30"
+                >
                   <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/15 ring-1 ring-teal-400/25">
                     <item.icon className="h-5 w-5 text-teal-300" aria-hidden />
                   </span>
-                  <h3 className="mt-6 font-display text-xl font-medium text-white">
+                  <h3 className="mt-6 flex items-center gap-2 font-display text-xl font-medium text-white">
                     {item.title}
+                    <ArrowUpRight className="h-4 w-4 text-teal-300 opacity-0 transition-opacity group-hover:opacity-100" aria-hidden />
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-petrol-100/70">
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-petrol-100/70">
                     {item.text}
                   </p>
-                </div>
+                  <span className="mt-5 text-[12px] font-semibold uppercase tracking-[0.14em] text-teal-300">
+                    Cadastrar currículo
+                  </span>
+                </a>
               </Reveal>
             ))}
           </div>
@@ -304,13 +316,14 @@ export function CareersProcurement() {
           <Reveal delay={0.1}>
             <div className="mt-8 overflow-hidden rounded-3xl border border-hairline bg-white shadow-sm">
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[1080px] text-left">
+                <table className="w-full min-w-[1180px] text-left">
                   <thead>
                     <tr className="border-b border-hairline bg-sand/60">
                       {[
                         'Seleção',
                         'Processo',
                         'Objeto',
+                        'Ato Convocatório',
                         'Publicação',
                         'Abertura',
                         'Esclar./Impugnação',
@@ -343,6 +356,22 @@ export function CareersProcurement() {
                         </td>
                         <td className="max-w-[420px] px-5 py-4 text-sm leading-relaxed text-petrol-800">
                           <span className="line-clamp-2">{row.object}</span>
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4">
+                          {row.convoc ? (
+                            <a
+                              href={row.convoc}
+                              target="_blank"
+                              rel="noreferrer"
+                              title="Ver Ato Convocatório em licitacoes-e.com.br"
+                              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-hairline bg-white text-petrol-800 transition-colors hover:border-teal-600 hover:text-teal-700"
+                              aria-label={`Ato Convocatório ${row.code}`}
+                            >
+                              <ExternalLink className="h-4 w-4" aria-hidden />
+                            </a>
+                          ) : (
+                            <span className="text-sm text-ink-soft">—</span>
+                          )}
                         </td>
                         <td className="tabular whitespace-nowrap px-5 py-4 text-sm text-ink-soft">
                           {row.publication || '—'}

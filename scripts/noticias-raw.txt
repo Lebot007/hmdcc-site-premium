@@ -1,0 +1,9 @@
+/processo-de-compras-selecao-de-fornecedores ~~ Compras
+/nucleo-de-ensino-e-pesquisa ~~ NEPE
+/processo-seletivo-simplificado-do-hospital-metropolitano-dr-celio-de-castro ~~ Vagas
+/processo-de-compras-selecao-de-fornecedores ~~ Compras
+/nucleo-de-ensino-e-pesquisa ~~ NEPE
+/processo-seletivo-simplificado-do-hospital-metropolitano-dr-celio-de-castro ~~ Vagas
+/processo-de-compras-selecao-de-fornecedores ~~ Compras
+/nucleo-de-ensino-e-pesquisa ~~ NEPE
+/processo-seletivo-simplificado-do-hospital-metropolitano-dr-celio-de-castro ~~ Vagas

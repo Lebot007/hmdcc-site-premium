@@ -276,30 +276,136 @@ const visitUnits = [
   },
 ]
 
-const faqs = [
+// FAQ — paridade total com a página "Dúvidas Frequentes" do portal original
+// (13 perguntas, mesmos textos e informações). Links úteis embutidos.
+const Link = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <a
+    href={href}
+    target={href.startsWith('#') ? undefined : '_blank'}
+    rel={href.startsWith('#') ? undefined : 'noreferrer'}
+    className="font-semibold text-teal-700 underline decoration-teal-600/40 underline-offset-2 transition-colors hover:text-teal-800 hover:decoration-teal-700"
+  >
+    {children}
+  </a>
+)
+
+const faqs: { q: string; a: React.ReactNode }[] = [
   {
-    q: 'Como faço para ser atendido no HMDCC?',
-    a: 'O acesso ao hospital ocorre por encaminhamento da Central de Internação de Belo Horizonte, que gerencia todas as vagas. Os pacientes chegam das UPAs ou de outros hospitais da rede pública. Como o HMDCC não possui pronto-socorro, não há atendimento sem encaminhamento da Central.',
+    q: 'Vocês atendem Pronto-Socorro?',
+    a: 'Não. O Hospital Metropolitano Dr. Célio de Castro (HMDCC) não atende demandas espontâneas de urgência e emergência. O modelo de atendimento do Hospital é referenciado, ou seja, os pacientes atendidos aqui são encaminhados pela Central de Internação de Belo Horizonte ou SAMU.',
   },
   {
-    q: 'Quem tem direito a acompanhante?',
-    a: 'Têm direito a acompanhante os pacientes com idade igual ou superior a 60 anos, menores de 18 anos e pessoas com necessidades especiais.',
+    q: 'Como agendar uma consulta?',
+    a: 'As consultas ambulatoriais do HMDCC são consultas de pré e pós-operatório — de pacientes que passarão ou passaram por uma cirurgia no hospital. O ambulatório não é um ambulatório de especialidades: para uma consulta com especialista, o usuário deve procurar um Centro de Saúde.',
   },
   {
-    q: 'Preciso de agendamento para exames de imagem?',
-    a: 'Sim. A oferta de exames de imagem no HMDCC é regulada pela Central de Marcação de Consultas e Exames da Secretaria Municipal de Saúde de BH. O hospital realiza exames de média e alta complexidade, como tomografia, endoscopia, colonoscopia, CPRE, ecocardiografia, raio X, hemodinâmica e ultrassonografia.',
+    q: 'Como agendar uma cirurgia?',
+    a: 'Quem envia os pacientes que precisam de cirurgias de urgência e cirurgias programadas (eletivas) é a Central de Internação de Belo Horizonte. Ou seja, os pacientes que chegam ao HMDCC para um procedimento cirúrgico são encaminhados pela Central vindo das UPAs, Centros de Saúde ou de outros hospitais da rede pública.',
   },
   {
-    q: 'Como funciona a residência médica?',
-    a: 'O HMDCC oferece 36 vagas para residência médica, com inscrições geralmente abertas entre outubro e novembro via PSU. Para 2027, a instituição lança o novo programa de residência em geriatria. Consulte a área de Carreiras para editais e resultados.',
+    q: 'Quais os documentos necessários para ser atendido no HMDCC?',
+    a: (
+      <>
+        <strong>Cirurgia eletiva:</strong> documento com foto, Autorização de Internação
+        Hospitalar (AIH), exames laboratoriais e de imagem quando realizados externamente,
+        além dos termos cirúrgicos e anestésicos assinados na consulta pré-cirúrgica.{' '}
+        <strong>Exames de imagem:</strong> ultrassom, endoscopia, colonoscopia, raio X,
+        ecocardiograma e doppler exigem documento com foto e pedido médico; tomografia e
+        arteriografia pedem também resultado recente de creatinina; embolização exige AIH,
+        creatinina (últimos 30 dias) e relatório do nefrologista em caso de doença renal
+        crônica; biópsia hepática pede hemograma e coagulograma (últimos 30 dias).
+      </>
+    ),
   },
   {
-    q: 'Como me candidatar a uma vaga de trabalho?',
-    a: 'Acesse a área Trabalhe Conosco e cadastre seu currículo no banco de dados na categoria correspondente (especialidades médicas, enfermagem ou demais funções). O cadastro tem validade de 6 meses, e o primeiro contato da equipe é feito por telefone.',
+    q: 'Como agendar um exame no HMDCC?',
+    a: 'O agendamento é realizado pela Central de Marcação de Consultas e Exames Especializados da Secretaria Municipal de Saúde de Belo Horizonte, que atende pedidos encaminhados pelos Centros de Saúde, UPAs e outros municípios, de acordo com a prioridade clínica e o risco de cada usuário. Dessa forma, não é possível agendar um exame diretamente no HMDCC.',
   },
   {
-    q: 'Como falar com a Ouvidoria?',
-    a: 'O atendimento presencial funciona de segunda a sexta-feira, das 8h às 17h, e pelo telefone (31) 3472-4197. É possível registrar contato identificado — com retorno garantido — ou anônimo, mediante averiguação das tratativas.',
+    q: 'Quais exames o hospital oferece?',
+    a: 'O HMDCC conta com uma completa e moderna estrutura para exames: angiografia, angiotomografia, biópsia guiada por imagem, colonoscopia, endoscopia, gastrostomia, CPRE, ecocardiografia, raio X, tomografia, ultrassonografia e arteriografia diagnóstica e terapêutica (neurocirurgia e cirurgia vascular).',
+  },
+  {
+    q: 'Como faço para solicitar um resultado de exame?',
+    a: (
+      <>
+        Envie um e-mail com a sua solicitação para{' '}
+        <Link href="mailto:spp@hmdcc.com.br">spp@hmdcc.com.br</Link>.
+      </>
+    ),
+  },
+  {
+    q: 'Quais especialidades o hospital oferece?',
+    a: 'O HMDCC é referência de alta complexidade em clínica médica, ortopedia, cirurgia geral, cirurgia vascular, neurocirurgia, neurologia e urologia. Também atende urgência e emergência clínica, cirúrgica e de Acidente Vascular Cerebral (AVC). Como não tem pronto-socorro, o paciente é atendido aqui referenciado pela Central de Internação de Belo Horizonte.',
+  },
+  {
+    q: 'O Hospital tem maternidade?',
+    a: 'O Hospital Metropolitano Dr. Célio de Castro não possui maternidade nem pediatria.',
+  },
+  {
+    q: 'Como faço para trabalhar no Hospital Metropolitano Dr. Célio de Castro?',
+    a: (
+      <>
+        As contratações ocorrem por meio da publicação de vagas em uma plataforma de
+        seleção, baseada em Edital divulgado no Diário Oficial do Município (DOM) e no
+        site do hospital. Acompanhe as publicações e inscreva-se em{' '}
+        <Link href="https://hmdcc.gupy.io/">hmdcc.gupy.io</Link>. Trata-se de seleção
+        pública com contratação CLT — não é concurso público. Para funções de apoio
+        terceirizadas (auxiliar administrativo, auxiliar de serviços gerais, porteiro e
+        vigilante), envie currículo para{' '}
+        <Link href="mailto:stephania.almeida@verzani.com.br">
+          stephania.almeida@verzani.com.br
+        </Link>
+        ; para recepcionista, para{' '}
+        <Link href="mailto:artebrilho@artebrilhoserv.com.br">
+          artebrilho@artebrilhoserv.com.br
+        </Link>{' '}
+        e{' '}
+        <Link href="mailto:supervisor1@artebrilhoserv.com.br">
+          supervisor1@artebrilhoserv.com.br
+        </Link>{' '}
+        — telefone (31) 3422-4515.
+      </>
+    ),
+  },
+  {
+    q: 'O que é preciso para fazer residência no hospital?',
+    a: 'O HMDCC possui programas de residência médica em Clínica Médica, Cirurgia Geral e Medicina Intensiva. Para concorrer a uma vaga, é necessário aguardar a publicação anual das vagas via Processo Seletivo Unificado de Minas Gerais (PSU-MG).',
+  },
+  {
+    q: 'Como faço para fazer estágio no Hospital?',
+    a: (
+      <>
+        <strong>Estágio de residência:</strong> verifique se há acordo de cooperação com
+        o hospital de origem; caso contrário, a COREME/COREMU ou setor de ensino pode
+        enviar a proposta ao NEPE ({' '}
+        <Link href="mailto:ensino.pesquisa@hmdcc.com.br">ensino.pesquisa@hmdcc.com.br</Link>{' '}
+        ). <strong>Estágio curricular:</strong> exige convênio firmado entre o hospital e
+        a instituição de ensino; sem convênio, a coordenação de estágio pode propor o
+        acordo ao NEPE. <strong>Estágio remunerado:</strong> vagas para diversos cursos
+        de graduação, com ingresso por análise de currículo e entrevista — as vagas são
+        divulgadas por e-mail ao banco de currículos e em editais no site, no Instagram e
+        no LinkedIn.
+      </>
+    ),
+  },
+  {
+    q: 'O que preciso fazer para agendar uma visita técnica?',
+    a: (
+      <>
+        O HMDCC está de portas abertas para representantes de hospitais, empresas,
+        instituições e órgãos públicos e privados. A visita de{' '}
+        <strong>benchmarking</strong> é solicitada pelo formulário de visita técnica
+        (dúvidas:{' '}
+        <Link href="mailto:benchmarking@hmdcc.com.br">benchmarking@hmdcc.com.br</Link>);
+        a visita <strong>técnico-acadêmica</strong>, destinada a estudantes, é solicitada
+        pelo formulário do NEPE ({' '}
+        <Link href="mailto:ensino.pesquisa@hmdcc.com.br">
+          ensino.pesquisa@hmdcc.com.br
+        </Link>{' '}
+        ), com no máximo 18 visitantes por dia e grupos de 6 pessoas na assistência.
+      </>
+    ),
   },
 ]
 
@@ -371,13 +477,24 @@ export function Patient() {
           </Reveal>
 
           <Reveal delay={0.2}>
-            <div className="mt-10 flex justify-center">
+            <div className="mt-10 flex flex-wrap justify-center gap-3">
               <a
-                href="#contato"
+                href="https://www2.hmdcc.com.br/wp-content/uploads/2025/07/BOLETIM-MEDICO-INFO-V53-15-07.pdf"
+                target="_blank"
+                rel="noreferrer"
                 className="group inline-flex items-center gap-2.5 rounded-full border border-hairline bg-ivory px-6 py-3 text-sm font-semibold text-petrol-900 transition-all hover:border-petrol-900 hover:bg-petrol-900 hover:text-white"
               >
                 <FileDown className="h-4 w-4 text-teal-600 group-hover:text-teal-300" aria-hidden />
                 Visualizar e baixar o guia completo de visitas
+              </a>
+              <a
+                href="https://wp.hmdcc.com.br/wp-content/uploads/2025/07/FOLDER-HORIZONTAL-DIGITAL-2025.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className="group inline-flex items-center gap-2.5 rounded-full border border-hairline bg-ivory px-6 py-3 text-sm font-semibold text-petrol-900 transition-all hover:border-petrol-900 hover:bg-petrol-900 hover:text-white"
+              >
+                <IdCard className="h-4 w-4 text-teal-600 group-hover:text-teal-300" aria-hidden />
+                Folder do paciente (PDF oficial)
               </a>
             </div>
           </Reveal>

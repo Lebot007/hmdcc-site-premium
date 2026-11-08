@@ -136,12 +136,12 @@ export function StatsAndNews() {
                   Últimas <em className="italic font-light text-teal-700">notícias</em>
                 </>
               }
-              description={`O arquivo completo da comunicação institucional — ${allNews.length} notícias publicadas desde abril de 2020.`}
+              description={`O arquivo completo da comunicação institucional — ${allNews.length} notícias publicadas desde agosto de 2016.`}
               className="max-w-xl"
             />
             <Reveal delay={0.15}>
               <span className="inline-flex items-center gap-2 rounded-full bg-petrol-900 px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-white">
-                {allNews.length} notícias · 2020–2026
+                {allNews.length} notícias · 2016–2026
               </span>
             </Reveal>
           </div>
