@@ -152,3 +152,36 @@
     linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
   background-size: 56px 56px;
 }
+
+/* ------------------------------------------------------------------ */
+/* Alto contraste (acessibilidade) — mesmo recurso do portal original  */
+/* Reforça textos suavizados, divisórias e imagens para leitura mais   */
+/* confortável por pessoas com baixa visão.                            */
+/* ------------------------------------------------------------------ */
+html.alto-contraste [class*="text-ink-soft"] {
+  color: #1c2c31 !important;
+}
+html.alto-contraste [class*="text-petrol-100/"] {
+  color: #f0faf9 !important;
+}
+html.alto-contraste [class*="text-petrol-200"] {
+  color: #d3efeb !important;
+}
+html.alto-contraste [class*="text-petrol-300"] {
+  color: #c3e9e3 !important;
+}
+html.alto-contraste [class*="text-petrol-800"] {
+  color: #0a3540 !important;
+}
+html.alto-contraste [class*="text-white/"] {
+  color: #ffffff !important;
+}
+html.alto-contraste [class*="border-hairline"] {
+  border-color: #7d776b !important;
+}
+html.alto-contraste [class*="border-white/"] {
+  border-color: rgba(255, 255, 255, 0.6) !important;
+}
+html.alto-contraste img {
+  filter: contrast(1.08);
+}

@@ -8,6 +8,7 @@ import {
   Linkedin,
   MapPin,
   Phone,
+  X,
   Youtube,
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -60,6 +61,130 @@ const socials = [
   { icon: Youtube, label: 'YouTube', href: 'https://www.youtube.com/@hmdcc' },
   { icon: TikTokIcon, label: 'TikTok', href: 'https://www.tiktok.com/@susquedacerto' },
 ]
+
+/* --------------------- Política de Cookie (modal) ------------------------- */
+
+const cookieTipos = [
+  {
+    nome: 'Cookies estritamente necessários',
+    desc: 'Permitem o acesso e a navegação na Plataforma. Esses cookies são essenciais para o acesso à Plataforma e utilização dos seus recursos.',
+  },
+  {
+    nome: 'Cookies de funcionalidade',
+    desc: 'Nos permite memorizar as preferências dos usuários (por exemplo, login, idioma, região em que se encontra etc.).',
+  },
+  {
+    nome: 'Cookies de desempenho',
+    desc: 'Nos deixa analisar a forma de uso (por exemplo, o tipo de equipamento utilizado, horário e tempo de acesso, o que foi clicado, eventuais mensagens de erro etc.) e melhorar o desempenho da Plataforma. As informações coletadas são agregadas e analisadas de forma anônima.',
+  },
+  {
+    nome: 'Cookies de terceiros',
+    desc: 'Em algumas partes da Plataforma, você poderá utilizar serviços de terceiros, incluindo o compartilhamento de publicações em redes sociais. Não nos responsabilizamos nem controlamos os cookies utilizados por esses serviços — recomendamos informar-se antes de compartilhar qualquer publicação.',
+  },
+]
+
+const cookiesLista = [
+  ['cfs_actions_11', 'Usado para criação de formulários'],
+  ['_gid (Google)', 'Usado para identificar usuários'],
+  ['_ga (Google)', 'Usado para identificar usuários'],
+  ['_gat (Google)', 'Usado para limitar solicitações ao Google Analytics'],
+]
+
+/** Link/botão que abre a Política de Cookie completa (mesmo texto do original). */
+export function CookiePolicyLink({ className, children }: { className?: string; children: React.ReactNode }) {
+  const [aberto, setAberto] = useState(false)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setAberto(false)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  return (
+    <>
+      <button type="button" onClick={() => setAberto(true)} className={className}>
+        {children}
+      </button>
+      <AnimatePresence>
+        {aberto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-petrol-950/70 p-4 backdrop-blur-sm"
+            onClick={() => setAberto(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Política de Cookie"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.98 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+              className="relative max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-8 shadow-2xl lg:p-10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setAberto(false)}
+                className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-ivory text-petrol-900 transition-colors hover:bg-sand"
+                aria-label="Fechar"
+              >
+                <X className="h-5 w-5" aria-hidden />
+              </button>
+              <h3 className="font-display text-2xl font-medium tracking-tight text-petrol-900">
+                Política de Cookie
+              </h3>
+              <div className="mt-4 space-y-4 text-[14px] leading-relaxed text-petrol-800">
+                <p>
+                  Este site usa cookies — pequenos arquivos de texto que são
+                  colocados em sua máquina para ajudar o site a fornecer uma
+                  melhor experiência ao usuário. Em geral, os cookies são usados
+                  para reter as preferências do usuário, armazenar informações e
+                  fornecer dados de rastreamento anônimos para aplicativos de
+                  terceiros, como o Google Analytics. Como regra, os cookies
+                  tornarão sua experiência de navegação melhor. No entanto, você
+                  pode preferir desativá-los neste site e em outros.
+                </p>
+                <p className="font-semibold text-petrol-900">
+                  Os cookies utilizados pelo Hospital Metropolitano Dr. Célio de
+                  Castro podem ser dos seguintes tipos:
+                </p>
+                <ul className="space-y-3">
+                  {cookieTipos.map((t) => (
+                    <li key={t.nome} className="rounded-2xl bg-ivory p-4">
+                      <span className="font-semibold text-petrol-900">{t.nome}:</span>{' '}
+                      <span className="text-ink-soft">{t.desc}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="font-semibold text-petrol-900">
+                  Abaixo, a lista dos cookies que podem ser armazenados:
+                </p>
+                <ul className="space-y-1.5">
+                  {cookiesLista.map(([nome, uso]) => (
+                    <li key={nome} className="text-ink-soft">
+                      <code className="rounded bg-sand px-1.5 py-0.5 text-[13px] text-petrol-900">{nome}</code>{' '}
+                      — {uso}
+                    </li>
+                  ))}
+                </ul>
+                <p>
+                  A maioria dos navegadores aceita cookies por padrão, mas você
+                  pode remover ou rejeitá-los nas configurações do seu navegador
+                  ou dispositivo — Internet Explorer, Mozilla Firefox, Google
+                  Chrome, Safari e Safari iOS. Lembre-se, no entanto, que sem
+                  cookies você pode não ser capaz de tirar o máximo proveito dos
+                  recursos do site do Hospital Metropolitano Dr. Célio de Castro.
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}
 
 export function Footer() {
   return (
@@ -161,9 +286,9 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col gap-5 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-6">
-            <a href="#inicio" className="text-xs text-petrol-100/50 transition-colors hover:text-teal-300">
+            <CookiePolicyLink className="text-xs text-petrol-100/50 transition-colors hover:text-teal-300">
               Política de Cookies
-            </a>
+            </CookiePolicyLink>
           </div>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -219,9 +344,9 @@ export function CookieBanner() {
                   Este site usa cookies — pequenos arquivos de texto colocados em
                   sua máquina para ajudar o site a fornecer uma melhor experiência
                   de usuário.{' '}
-                  <a href="#inicio" className="font-semibold text-teal-300 underline-offset-2 hover:underline">
+                  <CookiePolicyLink className="font-semibold text-teal-300 underline-offset-2 hover:underline">
                     Política de Cookies
-                  </a>
+                  </CookiePolicyLink>
                 </p>
                 <div className="mt-5 flex flex-wrap items-center gap-3">
                   <Button

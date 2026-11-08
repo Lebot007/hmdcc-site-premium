@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import {
   Activity,
+  Contrast,
   ChevronDown,
   FileQuestion,
   HandHeart,
@@ -83,6 +84,25 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
+  const [altoContraste, setAltoContraste] = useState(false)
+
+  useEffect(() => {
+    // Alto contraste persistente (acessibilidade) — aplica a classe no HTML
+    // e reflete no botão após o paint para evitar re-render em cascata
+    const salvo = localStorage.getItem('hmdcc-alto-contraste') === 'on'
+    document.documentElement.classList.toggle('alto-contraste', salvo)
+    const t = setTimeout(() => setAltoContraste(salvo), 0)
+    return () => clearTimeout(t)
+  }, [])
+
+  function alternarContraste() {
+    setAltoContraste((atual) => {
+      const novo = !atual
+      document.documentElement.classList.toggle('alto-contraste', novo)
+      localStorage.setItem('hmdcc-alto-contraste', novo ? 'on' : 'off')
+      return novo
+    })
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -130,6 +150,19 @@ export function Header() {
           <span className="hidden whitespace-nowrap text-[11px] text-petrol-300/70 xl:block">
             Rua Dona Luiza, 311 · Milionários · Belo Horizonte/MG
           </span>
+          <button
+            onClick={alternarContraste}
+            aria-pressed={altoContraste}
+            title="Alto contraste"
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors ${
+              altoContraste
+                ? 'bg-teal-400 text-petrol-950'
+                : 'bg-white/10 text-petrol-100 hover:bg-white/20'
+            }`}
+          >
+            <Contrast className="h-3.5 w-3.5" aria-hidden />
+            <span className="hidden 2xl:inline">Alto contraste</span>
+          </button>
         </div>
       </div>
 
