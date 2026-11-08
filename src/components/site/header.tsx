@@ -36,6 +36,10 @@ const navLinks = [
   { label: 'Transparência', href: '#transparencia' },
 ]
 
+// No menu desktop "Sou Paciente" fica apenas no dropdown Atendimento e na
+// barra de utilidades — evita quebra de linha na largura do breakpoint xl
+const desktopLinks = navLinks.filter((l) => l.label !== 'Sou Paciente')
+
 function Logo({ dark = false }: { dark?: boolean }) {
   return (
     <a href="#inicio" className="flex items-center gap-3 group" aria-label="Início">
@@ -109,7 +113,7 @@ export function Header() {
               <a
                 key={link.href}
                 href={link.href}
-                className="group inline-flex items-center gap-1.5 text-[11.5px] font-medium tracking-wide text-petrol-200 transition-colors hover:text-teal-300"
+                className="group inline-flex items-center gap-1.5 whitespace-nowrap text-[11.5px] font-medium tracking-wide text-petrol-200 transition-colors hover:text-teal-300"
               >
                 <link.icon className="h-3 w-3 text-teal-400" aria-hidden />
                 {link.label}
@@ -118,12 +122,12 @@ export function Header() {
           </div>
           <a
             href="tel:+553134724000"
-            className="inline-flex items-center gap-2 text-[11.5px] font-semibold tracking-wide text-white lg:ml-auto"
+            className="inline-flex items-center gap-2 whitespace-nowrap text-[11.5px] font-semibold tracking-wide text-white lg:ml-auto"
           >
             <Phone className="h-3.5 w-3.5 text-teal-400" aria-hidden />
             (31) 3472-4000
           </a>
-          <span className="hidden text-[11px] text-petrol-300/70 lg:block">
+          <span className="hidden whitespace-nowrap text-[11px] text-petrol-300/70 xl:block">
             Rua Dona Luiza, 311 · Milionários · Belo Horizonte/MG
           </span>
         </div>
@@ -139,14 +143,19 @@ export function Header() {
         )}
       >
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
-          <Logo />
+          <Logo dark={!scrolled} />
 
-          <nav className="hidden xl:flex items-center gap-1" aria-label="Navegação principal">
-            {navLinks.slice(0, 3).map((link) => (
+          <nav className="hidden xl:flex items-center gap-0.5" aria-label="Navegação principal">
+            {desktopLinks.slice(0, 3).map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-lg px-3 py-2 text-[13.5px] font-medium text-petrol-800 transition-colors hover:bg-petrol-900/[0.06] hover:text-petrol-950"
+                className={cn(
+                  'whitespace-nowrap rounded-lg px-2.5 py-2 text-[13px] font-medium transition-colors 2xl:px-3 2xl:text-[13.5px]',
+                  scrolled
+                    ? 'text-petrol-800 hover:bg-petrol-900/[0.06] hover:text-petrol-950'
+                    : 'text-ivory hover:bg-white/10 hover:text-teal-300'
+                )}
               >
                 {link.label}
               </a>
@@ -157,7 +166,12 @@ export function Header() {
               onMouseLeave={() => setServicesOpen(false)}
             >
               <button
-                className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-[13.5px] font-medium text-petrol-800 transition-colors hover:bg-petrol-900/[0.06] hover:text-petrol-950"
+                className={cn(
+                  'inline-flex items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-2 text-[13px] font-medium transition-colors 2xl:px-3 2xl:text-[13.5px]',
+                  scrolled
+                    ? 'text-petrol-800 hover:bg-petrol-900/[0.06] hover:text-petrol-950'
+                    : 'text-ivory hover:bg-white/10 hover:text-teal-300'
+                )}
                 aria-expanded={servicesOpen}
               >
                 Atendimento
@@ -196,11 +210,16 @@ export function Header() {
                 )}
               </AnimatePresence>
             </div>
-            {navLinks.slice(3).map((link) => (
+            {desktopLinks.slice(3).map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-lg px-3 py-2 text-[13.5px] font-medium text-petrol-800 transition-colors hover:bg-petrol-900/[0.06] hover:text-petrol-950"
+                className={cn(
+                  'whitespace-nowrap rounded-lg px-2.5 py-2 text-[13px] font-medium transition-colors 2xl:px-3 2xl:text-[13.5px]',
+                  scrolled
+                    ? 'text-petrol-800 hover:bg-petrol-900/[0.06] hover:text-petrol-950'
+                    : 'text-ivory hover:bg-white/10 hover:text-teal-300'
+                )}
               >
                 {link.label}
               </a>
@@ -210,13 +229,23 @@ export function Header() {
           <div className="flex items-center gap-3">
             <a
               href="#contato"
-              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-petrol-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-petrol-800 hover:shadow-lg hover:shadow-petrol-900/20"
+              className={cn(
+                'hidden sm:inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:shadow-lg',
+                scrolled
+                  ? 'bg-petrol-900 hover:bg-petrol-800 hover:shadow-petrol-900/20'
+                  : 'bg-teal-600 hover:bg-teal-500 hover:shadow-teal-600/30'
+              )}
             >
-              <Activity className="h-4 w-4 text-teal-300" aria-hidden />
+              <Activity className="h-4 w-4 text-white" aria-hidden />
               Fale conosco
             </a>
             <button
-              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-hairline bg-white/80 text-petrol-900 xl:hidden"
+              className={cn(
+                'inline-flex h-11 w-11 items-center justify-center rounded-xl border transition-colors xl:hidden',
+                scrolled
+                  ? 'border-hairline bg-white/80 text-petrol-900'
+                  : 'border-white/25 bg-white/10 text-white backdrop-blur-sm'
+              )}
               onClick={() => setMobileOpen(true)}
               aria-label="Abrir menu"
             >
