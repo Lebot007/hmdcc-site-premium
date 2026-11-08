@@ -65,3 +65,5 @@ db/
 *.db-journal
 .DS_Store
 thumbs.db
+# referências locais
+scripts/hmdcc-ref/

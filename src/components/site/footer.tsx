@@ -143,24 +143,36 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-5 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-petrol-100/50">
-            © {new Date().getFullYear()} Hospital Metropolitano Dr. Célio de Castro ·
-            Todos os direitos reservados.
-          </p>
+        <div className="mt-16 border-t border-white/10 pt-10">
+          <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-center sm:justify-between">
+            <Image
+              src="/images/logos-parceiros.png"
+              alt="Logos institucionais: Hospital Metropolitano Dr. Célio de Castro, SUS e Prefeitura de Belo Horizonte"
+              width={280}
+              height={45}
+              className="h-10 w-auto opacity-90 transition-opacity hover:opacity-100"
+            />
+            <p className="text-xs text-petrol-100/50">
+              © {new Date().getFullYear()} Hospital Metropolitano Dr. Célio de Castro ·
+              Todos os direitos reservados.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-5 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-6">
             <a href="#inicio" className="text-xs text-petrol-100/50 transition-colors hover:text-teal-300">
               Política de Cookies
             </a>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-petrol-100 transition-all hover:border-teal-400/40 hover:text-teal-300"
-              aria-label="Voltar ao topo"
-            >
-              <ArrowUp className="h-3.5 w-3.5" aria-hidden />
-              Topo
-            </button>
           </div>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-petrol-100 transition-all hover:border-teal-400/40 hover:text-teal-300"
+            aria-label="Voltar ao topo"
+          >
+            <ArrowUp className="h-3.5 w-3.5" aria-hidden />
+            Topo
+          </button>
         </div>
       </div>
     </footer>
